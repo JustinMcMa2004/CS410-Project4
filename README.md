@@ -12,6 +12,8 @@ Stakeholders:
 - Recipients (Person who receives the package)
 - Customer Service
 - Warehouse staff
+- Dispatcher
+- System Administrator 
 
 
 Open questions:
@@ -19,7 +21,7 @@ Open questions:
 1. Can customers use the system, and if so, what can they see?
 2. What package information should each type of user be allowed to see?
 3. What user roles should the system have, and what permissions should each role have?
-4. What information should be required for each package when registering
+4. What information should be required for each package when registering?
 5. What information should be used to identify a package?
 6. What information should be updated and stored in a package’s delivery history from intake to delivery?
 7. How should users be able to search for packages?
