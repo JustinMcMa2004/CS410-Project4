@@ -35,6 +35,10 @@ Open questions:
 15. Which features should be prioritized for the first version of the system? Registration? Search? Or status updates?
 16. What additional features should be considered after the core requirements are completed?
 
+Object Discovery Table
 
-
-
+| Object       | Data/Attributes                                                                            | Behavior/Methods                                        |
+| ------------ | --------------                                                                             | -------------                                           |
+| Location     | recipient, address, apartment (optional), city, state, zipCode, time                       | findDistance(), setTime(), verifies if address is valid | 
+| Package      | locationHistory, destination, ID, status, dimensions, weight, requiresSignature, isFragile | getCurrentLocation(), isDelivered()                     |
+| Driver       | employeeName, ID, truck, dispatchTime, assignedPackages                                    | findRoute()                                             |
