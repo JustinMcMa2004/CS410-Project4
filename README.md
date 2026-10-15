@@ -35,10 +35,41 @@ Open questions:
 15. Which features should be prioritized for the first version of the system? Registration? Search? Or status updates?
 16. What additional features should be considered after the core requirements are completed?
 
-Object Discovery Table
+Object Discovery Table:
+-
 
-| Object       | Data/Attributes                                                                            | Behavior/Methods                                        |
-| ------------ | --------------                                                                             | -------------                                           |
-| Location     | recipient, address, apartment (optional), city, state, zipCode, time                       | findDistance(), setTime(), verifies if address is valid | 
-| Package      | locationHistory, destination, ID, status, dimensions, weight, requiresSignature, isFragile | getCurrentLocation(), isDelivered()                     |
-| Driver       | employeeName, ID, truck, dispatchTime, assignedPackages                                    | findRoute()                                             |
+| Object    | Data/Attributes  | Behavior/Methods    |
+| --------- | ---------------- | ------------------- |
+| Location  | address, apartment, city, state, zipCode | findDistance(), ensures that each address is valid |
+| Status    | statusMessage, date, time | readyToShip() |
+| Package   | recipient, destination, packageID, dimensions, weight, requiresSignature, isFragile, locationHistory, statusHistory | getCurrentLocation(), isDelivered() |
+| Driver    | employeeName, driverID, truckID, dispatchTime, assignedPackages | findRoute(), getPackage() |
+| deliveryAttempt | attemptID, packageID, driverID, attemptTime, attemptDate, isSuccessful, failureReason | recordAttempt(), recordFailure(), isSuccessful() | 
+
+Class Diagrams:
+-
+
+| Location |
+| -------- |
+| - address : string  <br>- apartment : int <br>- city : string <br>- state : string <br>- zipCode : int |
+| + findDistance(destination : Location) : double <br>+ displayLocation() : void |
+
+| Status |
+| ------ |
+| - statusMessage : string <br>- date : vector<int> <br>- time : int |
+| + readyToShip() : bool <br>+ setTime(time : int): void  |
+
+| Package |
+| ------- |
+| - recipient : string <br>- destination : Location <br>- packageID : int <br>- dimensions : vector< int > <br>- weight : int <br>- requiresSignature : bool <br>- isFragile : bool <br>- locationHistory : vector< Location > <br>- statusHistory : vector < Status > |
+| + getCurrentLocation() : Location <br>+ getCurrentStatus() : Status <br>+ isDelivered() : bool |
+
+| Driver |
+| ------ |
+| - employeeName : string <br>- driverID : int <br>- attemptTime : int <br>- attemptDate : vector< int > <br>- isSuccessful : bool <br>- failureReason : string |
+| + findRoute() : vector< Package > <br>+ getPackage(packageID : int) : Pacakge |
+
+| DeliveryAttempt |
+| --------------- |
+| - attemptID : int <br>- packageID : int <br>- driverID : int <br>- attemptTime : int <br>- attemptDate : vector< int > <br>- isSuccessful : bool <br>- failureReason : string |
+| + recordAttempt(result : bool, time : int) : void <br>+ recordFailure(reason : string) : void <br>+ isSuccessful() : bool |
