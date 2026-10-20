@@ -1,19 +1,49 @@
-/* Placeholder for the project's CMake configuration. */
-/* Implementation only for spring 0 -> */
 
-#if 0
 cmake_minimum_required(VERSION 3.16)
 
-project(MyProject)
+project(MyProject LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(MyProject
-    src/main.cpp
+include(FetchContent)
+
+FetchContent_Declare(
+    googletest
+    URL https://github.com/google/googletest/archive/refs/tags/v1.17.0.zip
+)
+
+FetchContent_MakeAvailable(googletest)
+
+add_library(product
     src/Product.cpp
 )
 
-target_include_directories(MyProject
-    PRIVATE include
+target_include_directories(product
+    PUBLIC include
 )
-#endif
+
+add_executable(MyProject
+    src/main.cpp
+)
+
+target_link_libraries(MyProject
+    PRIVATE product
+)
+
+enable_testing()
+
+add_executable(product_tests
+    tests/test_product.cpp
+)
+
+target_link_libraries(product_tests
+    PRIVATE
+        product
+        GTest::gtest_main
+)
+
+include(GoogleTest)
+
+gtest_discover_tests(product_tests)
