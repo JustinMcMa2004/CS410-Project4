@@ -84,11 +84,16 @@ CS410-Project4/
 ├── data/
 ├── docs/
 │   └── Requirements/
-├── include/          # C++ header files
-├── src/              # C++ source files
+│       ├── interview-questions.md
+│       ├── project_goal.md
+│       └── stakeholders.md
+├── include/
+│   └── Product.h
+├── src/
+│   └── Product.cpp
 ├── tests/
 ├── .gitignore
-├── CMakeLists.cpp
+├── CMakeLists.txt
 ├── CONTRIBUTIONS.md
 ├── LICENSE
 └── README.md
