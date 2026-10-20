@@ -5,7 +5,7 @@ Project goal:
 - 
 To develop a system that improves the organization and accessibility of package information from the initial intake through final delivery. The system should assist staff in managing packages and tracking their movement throughout the delivery process. This system should allow staff to register packages, manage deliveries, track and review a package's current and past delivery history. 
 
-Repository Structure:
+Repository Structure
 
 Stakeholders: 
 -
