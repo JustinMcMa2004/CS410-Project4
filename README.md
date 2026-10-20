@@ -75,3 +75,21 @@ Class Diagrams:
 | --------------- |
 | - attemptID : int <br>- packageID : int <br>- driverID : int <br>- attemptTime : int <br>- attemptDate : vector< int > <br>- isSuccessful : bool <br>- failureReason : string |
 | + recordAttempt(result : bool, time : int) : void <br>+ recordFailure(reason : string) : void <br>+ isSuccessful() : bool |
+
+
+Repository Structure:
+-
+```text
+CS410-Project4/
+├── data/
+├── docs/
+│   └── Requirements/
+├── include/          # C++ header files
+├── src/              # C++ source files
+├── tests/
+├── .gitignore
+├── CMakeLists.cpp
+├── CONTRIBUTIONS.md
+├── LICENSE
+└── README.md
+```
