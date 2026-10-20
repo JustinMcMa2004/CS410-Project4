@@ -33,6 +33,9 @@
 *.la
 *.a
 *.lib
+# Operating system files
+.DS_Store
+Thumbs.db
 
 # Executables
 *.exe
