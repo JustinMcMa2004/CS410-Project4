@@ -1,11 +1,11 @@
 # CS410-Project4
 Our CS410 Course Project
 
+
 Project goal:
 - 
 To develop a system that improves the organization and accessibility of package information from the initial intake through final delivery. The system should assist staff in managing packages and tracking their movement throughout the delivery process. This system should allow staff to register packages, manage deliveries, track and review a package's current and past delivery history. 
 
-Repository Structure
 
 Stakeholders: 
 -
@@ -37,6 +37,17 @@ Open questions:
 15. Which features should be prioritized for the first version of the system? Registration? Search? Or status updates?
 16. What additional features should be considered after the core requirements are completed?
 
+
+Assumptions and Design questions:
+-
+1. Is the delivery order entered manually or calculated automatically?
+2. Which delivery statuses and transitions are allowed?
+3. What date and time formats, time zone, and measurement units will the system use?
+4. Should finished package deliveries forever stay in the system? Or is there a point where they should be deleted? 
+5. Is the Package class doing too much? 
+6. Is there too much coupling among any of the classes? 
+
+
 Object Discovery Table:
 -
 
@@ -44,9 +55,10 @@ Object Discovery Table:
 | --------- | ---------------- | ------------------- |
 | Location  | address, apartment, city, state, zipCode | findDistance(), ensures that each address is valid |
 | Status    | statusMessage, date, time | readyToShip() |
-| Package   | recipient, destination, packageID, dimensions, weight, requiresSignature, isFragile, locationHistory, statusHistory | getCurrentLocation(), isDelivered() |
-| Driver    | employeeName, driverID, truckID, dispatchTime, assignedPackages | findRoute(), getPackage() |
-| deliveryAttempt | attemptID, packageID, driverID, attemptTime, attemptDate, isSuccessful, failureReason | recordAttempt(), recordFailure(), isSuccessful() | 
+| Package   | recipient, destination, packageID, dimensions, weight, requiresSignature, isFragile, locationHistory, statusHistory, intakeTime, deliveryAttempts | getCurrentLocation(), getCurrentStatus(), isDelivered(), updateStatus(), getStatusHistory(), addDeliveryAttempt(), getDeliveryAttempts() |
+| Driver    | employeeName, driverID, truckID, dispatchTime, assignedPackages | findRoute(), assignPackage(), getPackage() |
+| deliveryAttempt | attemptID, packageID, driverID, attemptTime, attemptDate, successful, failureReason | recordAttempt(), recordFailure(), isSuccessful() | 
+
 
 Class Diagrams:
 -
@@ -54,7 +66,7 @@ Class Diagrams:
 | Location |
 | -------- |
 | - address : string  <br>- apartment : int <br>- city : string <br>- state : string <br>- zipCode : int |
-| + findDistance(destination : Location) : double <br>+ displayLocation() : void |
+| + findDistance(destination : const Location&) : double <br>+ displayLocation() : void |
 
 | Status |
 | ------ |
@@ -63,22 +75,44 @@ Class Diagrams:
 
 | Package |
 | ------- |
-| - recipient : string <br>- destination : Location <br>- packageID : int <br>- dimensions : vector< int > <br>- weight : int <br>- requiresSignature : bool <br>- isFragile : bool <br>- locationHistory : vector< Location > <br>- statusHistory : vector < Status > |
-| + getCurrentLocation() : Location <br>+ getCurrentStatus() : Status <br>+ isDelivered() : bool |
+| - recipient : string <br>- destination : Location <br>- packageID : int <br>- dimensions : vector< int > <br>- weight : double <br>- requiresSignature : bool <br>- isFragile : bool <br>- locationHistory : vector< Location > <br>- statusHistory : vector < Status > <br>- intakeTime : string <br>- deliveryAttempts : vector< DeliveryAttempt > |
+| + getCurrentLocation() : Location <br>+ getCurrentStatus() : Status <br>+ isDelivered() : bool <br>+ updateStatus(newStatus : const Status&) : bool <br>+	getStatusHistory() : vector< Status > <br>+ addDeliveryAttempt(attempt : const DeliveryAttempt&) : bool <br>+ getDeliveryAttempts() : vector< DeliveryAttempt > |
 
 | Driver |
 | ------ |
-| - employeeName : string <br>- driverID : int <br>- attemptTime : int <br>- attemptDate : vector< int > <br>- isSuccessful : bool <br>- failureReason : string |
-| + findRoute() : vector< Package > <br>+ getPackage(packageID : int) : Pacakge |
+| - employeeName : string <br>- driverID : int <br>- truckID : int <br>- dispatchTime: int <br>- assignedPackages : vector< Package > |
+| + findRoute() : vector< Package > <br>+ getPackage(packageID : int) : Pacakge <br>+ assignPackage(package : Package&) : bool <br>+ getAssignedPackages() : vector< Package > |
 
 | DeliveryAttempt |
 | --------------- |
-| - attemptID : int <br>- packageID : int <br>- driverID : int <br>- attemptTime : int <br>- attemptDate : vector< int > <br>- isSuccessful : bool <br>- failureReason : string |
+| - attemptID : int <br>- packageID : int <br>- driverID : int <br>- attemptTime : int <br>- attemptDate : vector< int > <br>- successful : bool <br>- failureReason : string |
 | + recordAttempt(result : bool, time : int) : void <br>+ recordFailure(reason : string) : void <br>+ isSuccessful() : bool |
+
+
+Class Diagrams:
+-
+- **A Package has Locations.**
+  - A Package contains its destination and location history. These values belong to the package and are modeled using composition.
+
+- **A Package has Statuses.**
+  - A Package owns its status history. Status changes are made through `updateStatus()` so that transition validation and history updates remain together.
+
+- **A Package has DeliveryAttempts.**
+  - A Package owns its delivery attempt records. `DeliveryAttempt` is a separate record rather than a subclass of `Status` because an attempt result and a delivery status represent different concepts.
+
+- **A Driver has Packages.**
+  - A Driver is associated with assigned packages. Driver does not own the packages, and removing a driver must not delete package records. The representation of package references remains to be determined.
 
 
 Repository Structure:
 -
+
+| Directory / File | Description |
+|---|---|
+| `README.md` | README.md will consist of a brief overview of the project with information like the goal, stakeholders, etc. |
+| `docs/` | Will contain more detailed information about what is listed in the README.md file. |
+| Source code directory | Will contain the code of the project, which includes the header and source code files of each object. |
+
 ```text
 CS410-Project4/
 ├── data/
@@ -91,7 +125,9 @@ CS410-Project4/
 │   └── Product.h
 ├── src/
 │   └── Product.cpp
+│   └── main.cpp
 ├── tests/
+│   └── test_product.cpp
 ├── .gitignore
 ├── CMakeLists.txt
 ├── CONTRIBUTIONS.md
