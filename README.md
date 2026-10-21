@@ -56,7 +56,7 @@ Object Discovery Table:
 | Location  | address, apartment, city, state, zipCode | findDistance(), ensures that each address is valid |
 | Status    | statusMessage, date, time | readyToShip() |
 | Package   | recipient, destination, packageID, dimensions, weight, requiresSignature, isFragile, locationHistory, statusHistory, intakeTime, deliveryAttempts | getCurrentLocation(), getCurrentStatus(), isDelivered(), updateStatus(), getStatusHistory(), addDeliveryAttempt(), getDeliveryAttempts() |
-| Driver    | employeeName, driverID, truckID, dispatchTime, assignedPackages | findRoute(), assignPackage(), getAssignedPackage() |
+| Driver    | employeeName, driverID, truckID, dispatchTime, assignedPackages | findRoute(), assignPackage(), getAssignedPackages() |
 | DeliveryAttempt | attemptID, packageID, driverID, attemptTime, attemptDate, successful, failureReason | recordAttempt(), recordFailure(), isSuccessful() | 
 
 
@@ -89,7 +89,7 @@ Class Diagrams:
 | + recordAttempt(result : bool, time : int) : void <br>+ recordFailure(reason : string) : void <br>+ isSuccessful() : bool |
 
 
-Design Decision:
+Design Decisions:
 -
 - **A Package has Locations.**
   - A Package contains its destination and location history. These values belong to the package and are modeled using composition.
