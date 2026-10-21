@@ -56,8 +56,8 @@ Object Discovery Table:
 | Location  | address, apartment, city, state, zipCode | findDistance(), ensures that each address is valid |
 | Status    | statusMessage, date, time | readyToShip() |
 | Package   | recipient, destination, packageID, dimensions, weight, requiresSignature, isFragile, locationHistory, statusHistory, intakeTime, deliveryAttempts | getCurrentLocation(), getCurrentStatus(), isDelivered(), updateStatus(), getStatusHistory(), addDeliveryAttempt(), getDeliveryAttempts() |
-| Driver    | employeeName, driverID, truckID, dispatchTime, assignedPackages | findRoute(), assignPackage(), getPackage() |
-| deliveryAttempt | attemptID, packageID, driverID, attemptTime, attemptDate, successful, failureReason | recordAttempt(), recordFailure(), isSuccessful() | 
+| Driver    | employeeName, driverID, truckID, dispatchTime, assignedPackages | findRoute(), assignPackage(), getAssignedPackage() |
+| DeliveryAttempt | attemptID, packageID, driverID, attemptTime, attemptDate, successful, failureReason | recordAttempt(), recordFailure(), isSuccessful() | 
 
 
 Class Diagrams:
@@ -75,13 +75,13 @@ Class Diagrams:
 
 | Package |
 | ------- |
-| - recipient : string <br>- destination : Location <br>- packageID : int <br>- dimensions : vector< int > <br>- weight : double <br>- requiresSignature : bool <br>- isFragile : bool <br>- locationHistory : vector< Location > <br>- statusHistory : vector < Status > <br>- intakeTime : string <br>- deliveryAttempts : vector< DeliveryAttempt > |
+| - recipient : string <br>- destination : Location <br>- packageID : int <br>- dimensions : vector< double > <br>- weight : double <br>- requiresSignature : bool <br>- isFragile : bool <br>- locationHistory : vector< Location > <br>- statusHistory : vector < Status > <br>- intakeTime : string <br>- deliveryAttempts : vector< DeliveryAttempt > |
 | + getCurrentLocation() : Location <br>+ getCurrentStatus() : Status <br>+ isDelivered() : bool <br>+ updateStatus(newStatus : const Status&) : bool <br>+	getStatusHistory() : vector< Status > <br>+ addDeliveryAttempt(attempt : const DeliveryAttempt&) : bool <br>+ getDeliveryAttempts() : vector< DeliveryAttempt > |
 
 | Driver |
 | ------ |
 | - employeeName : string <br>- driverID : int <br>- truckID : int <br>- dispatchTime: int <br>- assignedPackages : vector< Package > |
-| + findRoute() : vector< Package > <br>+ getPackage(packageID : int) : Pacakge <br>+ assignPackage(package : Package&) : bool <br>+ getAssignedPackages() : vector< Package > |
+| + findRoute() : vector< Package > <br>+ getPackage(packageID : int) : Package <br>+ assignPackage(package : Package&) : bool <br>+ getAssignedPackages() : vector< Package > |
 
 | DeliveryAttempt |
 | --------------- |
@@ -89,7 +89,7 @@ Class Diagrams:
 | + recordAttempt(result : bool, time : int) : void <br>+ recordFailure(reason : string) : void <br>+ isSuccessful() : bool |
 
 
-Class Diagrams:
+Design Decision:
 -
 - **A Package has Locations.**
   - A Package contains its destination and location history. These values belong to the package and are modeled using composition.
@@ -124,7 +124,7 @@ CS410-Project4/
 ├── include/
 │   └── Product.h
 ├── src/
-│   └── Product.cpp
+│   ├── Product.cpp
 │   └── main.cpp
 ├── tests/
 │   └── test_product.cpp
@@ -134,3 +134,34 @@ CS410-Project4/
 ├── LICENSE
 └── README.md
 ```
+
+
+## Build and Test Instructions
+
+### Prerequisites
+
+- C++ compiler with C++17 support
+- CMake
+- A compatible build tool (such as Ninja)
+
+### Configure the Project
+
+From the project root directory:
+
+```bash
+cmake -S . -B build
+```
+
+### Build the Project
+
+```bash
+cmake --build build
+```
+
+### Run Automated Tests
+
+```bash
+ctest --test-dir build --output-on-failure
+```
+
+The project uses GoogleTest for automated testing. These commands have been verified on Windows using CMake and the GNU C++ compiler.
