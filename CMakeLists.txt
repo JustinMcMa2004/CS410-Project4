@@ -18,6 +18,10 @@ FetchContent_MakeAvailable(googletest)
 
 add_library(product
     src/Product.cpp
+    src/Location.cpp
+    src/Status.cpp 
+    src/Package.cpp
+    src/PackageRegistry.cpp
 )
 
 target_include_directories(product
@@ -26,6 +30,7 @@ target_include_directories(product
 
 add_executable(MyProject
     src/main.cpp
+
 )
 
 target_link_libraries(MyProject
@@ -36,6 +41,7 @@ enable_testing()
 
 add_executable(product_tests
     tests/test_product.cpp
+    tests/test_package_registration.cpp
 )
 
 target_link_libraries(product_tests
