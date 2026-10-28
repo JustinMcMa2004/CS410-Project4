@@ -48,16 +48,26 @@ Assumptions and Design questions:
 6. Is there too much coupling among any of the classes? 
 
 
-Object Discovery Table:
+Object Discovery Table (Current Build):
 -
 
-| Object    | Data/Attributes  | Behavior/Methods    |
-| --------- | ---------------- | ------------------- |
-| Location  | address, apartment, city, state, zipCode | findDistance(), ensures that each address is valid |
-| Status    | statusMessage, date, time | readyToShip() |
-| Package   | recipient, destination, packageID, dimensions, weight, requiresSignature, isFragile, locationHistory, statusHistory, intakeTime, deliveryAttempts | getCurrentLocation(), getCurrentStatus(), isDelivered(), updateStatus(), getStatusHistory(), addDeliveryAttempt(), getDeliveryAttempts() |
-| Driver    | employeeName, driverID, truckID, dispatchTime, assignedPackages | findRoute(), assignPackage(), getAssignedPackages() |
-| DeliveryAttempt | attemptID, packageID, driverID, attemptTime, attemptDate, successful, failureReason | recordAttempt(), recordFailure(), isSuccessful() | 
+| Object | Data/Attributes | Behavior/Methods |
+| ------ | --------------- | ---------------- |
+| Location | address, apartment, city, state, zipCode | isValid() |
+| Status | statusMessage, date, time | readyToShip(), setTime(), getStatusMessage() |
+| Package | recipient, destination, packageID, dimensions, weight, requiresSignature, isFragile, locationHistory, statusHistory, intakeTime | isValid(), getPackageID(), getCurrentStatus() |
+| PackageRegistry | packages | registerPackage(), isRegistered(), getPackages() |
+| Product | quantity | hasEnough() |
+
+Object Discovery Table (Future):
+-
+
+| Object | Data/Attributes | Behavior/Methods |
+| ------ | --------------- | ---------------- |
+| Location | — | findDistance() |
+| Package | deliveryAttempts | getCurrentLocation(), isDelivered(), updateStatus(), getStatusHistory(), addDeliveryAttempt(), getDeliveryAttempts() |
+| Driver | employeeName, driverID, truckID, dispatchTime, assignedPackages | findRoute(), assignPackage(), getAssignedPackages() |
+| DeliveryAttempt | attemptID, packageID, driverID, attemptTime, attemptDate, successful, failureReason | recordAttempt(), recordFailure(), isSuccessful() |
 
 
 Class Diagrams:
@@ -109,25 +119,46 @@ Repository Structure:
 
 | Directory / File | Description |
 |---|---|
-| `README.md` | README.md will consist of a brief overview of the project with information like the goal, stakeholders, etc. |
-| `docs/` | Will contain more detailed information about what is listed in the README.md file. |
-| Source code directory | Will contain the code of the project, which includes the header and source code files of each object. |
+| `.github/workflows/` | GitHub Actions continuous integration workflow. |
+| `data/` | Placeholder for project data. |
+| `docs/Requirements/` | Project goal, stakeholders, and interview questions. |
+| `include/` | C++ headers for the project classes and shared helpers. |
+| `src/` | C++ implementations and the application entry point. |
+| `tests/` | GoogleTest unit tests. |
+| `CMakeLists.txt` | CMake configuration for building the application and tests. |
+| `README.md` | Project overview, requirements context, and build/test instructions. |
 
 ```text
 CS410-Project4/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── data/
+│   └── .gitkeep
 ├── docs/
 │   └── Requirements/
 │       ├── interview-questions.md
 │       ├── project_goal.md
 │       └── stakeholders.md
 ├── include/
-│   └── Product.h
+│   ├── Location.h
+│   ├── Package.h
+│   ├── PackageRegistry.h
+│   ├── Product.h
+│   ├── Status.h
+│   └── isBlank.h
 ├── src/
+│   ├── Location.cpp
+│   ├── Package.cpp
+│   ├── PackageRegistry.cpp
 │   ├── Product.cpp
-│   └── main.cpp
+│   ├── Status.cpp
+│   ├── main.cpp
+│   └── .gitkeep
 ├── tests/
-│   └── test_product.cpp
+│   ├── test_package_registration.cpp
+│   ├── test_product.cpp
+│   └── .gitkeep
 ├── .gitignore
 ├── CMakeLists.txt
 ├── CONTRIBUTIONS.md
@@ -135,13 +166,15 @@ CS410-Project4/
 └── README.md
 ```
 
+The `MyProject` executable is built in the `build/` directory, which is generated locally and is not tracked in the repository.
+
 
 ## Build and Test Instructions
 
 ### Prerequisites
 
 - C++ compiler with C++17 support
-- CMake
+- CMake 3.16 or later
 - A compatible build tool (such as Ninja)
 
 ### Configure the Project
@@ -156,6 +189,14 @@ cmake -S . -B build
 
 ```bash
 cmake --build build
+```
+
+### Run the Application
+
+After building, run the executable from the repository root:
+
+```bash
+./build/MyProject
 ```
 
 ### Run Automated Tests
