@@ -27,7 +27,7 @@ bool readPositive(const std::string& prompt, double& value) {
 }
 int main() {
     PackageRegistry registry;
-    std::cout << "Package Management System\nPackages are stored for this session only.\n";
+    std::cout << "Package Management System\n";
     std::string choice;
     while (readText("\n1. Register package\n0. Exit\nChoice: ", choice)) {
         if (choice == "0") break;
