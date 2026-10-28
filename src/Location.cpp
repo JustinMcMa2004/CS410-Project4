@@ -1,4 +1,5 @@
 #include "Location.h"
+#include "isBlank.h"
 
 using std::string;
 
@@ -18,5 +19,5 @@ Location::Location(
     }
 
 bool Location::isValid() const {
-    return !address.empty() && !city.empty() && !state.empty() && !zipCode.empty();
+    return !isBlank(address) && !isBlank(city) && !isBlank(state) && !isBlank(zipCode);
 }

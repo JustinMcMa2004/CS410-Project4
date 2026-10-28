@@ -1,5 +1,6 @@
 
 #include "Package.h"
+#include "isBlank.h"
 
 using std::string;
 using std::vector;
@@ -25,9 +26,9 @@ Package::Package(
 }
 
 bool Package::isValid() const {
-    return !recipient.empty() && 
+    return !isBlank(recipient) && 
             destination.isValid() &&
-            !packageID.empty() &&
+            !isBlank(packageID) &&
             dimensions.size() == 3 &&
             dimensions[0] > 0 &&
             dimensions[1] > 0 &&
