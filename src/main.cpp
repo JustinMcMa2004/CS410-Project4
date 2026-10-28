@@ -5,6 +5,7 @@
 #include "PackageRegistry.h"
 
 namespace {
+// Read and trim user input.
 bool readText(const std::string& prompt, std::string& value) {
     std::cout << prompt;
     if (!std::getline(std::cin, value)) return false;
@@ -13,6 +14,7 @@ bool readText(const std::string& prompt, std::string& value) {
         value.substr(first, value.find_last_not_of(" \t\r\n") - first + 1);
     return true;
 }
+// Keep prompting until the user enters a valid positive number.
 bool readPositive(const std::string& prompt, double& value) {
     std::string line;
     while (readText(prompt, line)) {
@@ -48,9 +50,13 @@ int main() {
             !readPositive("Width (inches): ", width) ||
             !readPositive("Height (inches): ", height) ||
             !readPositive("Weight (pounds): ", weight)) break;
+        // Create a package using the provided information.
         Location destination(address, apartment, city, state, zip);
         Package package(recipient, destination, id, {length, width, height}, weight);
+        
         std::string error;
+        
+        // Register the package and display the result.
         if (registry.registerPackage(package, error)) {
             std::cout << "Registered package: " << package.getPackageID()
                       << "\nStatus: " << package.getCurrentStatus().getStatusMessage()
