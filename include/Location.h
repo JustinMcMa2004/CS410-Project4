@@ -28,6 +28,9 @@ public:
 
     // return true if all required address fields are present
     bool isValid() const;
+
+    // Returns a string that represents a properly formatted address. 
+    string getLocation() const;
 };
 
 #endif

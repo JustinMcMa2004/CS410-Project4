@@ -47,6 +47,9 @@ public:
 
     // returns current status
     Status getCurrentStatus() const;
+
+    // Prints the currrent information of a package. 
+    string getPackageInfo() const; 
 };
 
 #endif

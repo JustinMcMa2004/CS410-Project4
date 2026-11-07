@@ -24,6 +24,9 @@ public:
 
     // return all registered packages
     const vector<Package>& getPackages() const;
+
+    // Finds the matching index of a package with the same provided id, if it exists. Returns -1 otherwise. 
+    int getIndex(string) const; 
 };
 
 #endif
