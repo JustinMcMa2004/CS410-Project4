@@ -154,7 +154,7 @@ TEST(PackageSearchTest, validSearchWithMultiplePackages) {
     correctString += "Current Location: 456 Placeholder Avenue, Apt. 3 Boston, MA 02118\n";
     correctString += "Status: Registered\n";
     correctString += "Time (EST): ";
-    correctString += registry.getPackages()[0].getCurrentStatus().getDateAndTime();
+    correctString += registry.getPackages()[1].getCurrentStatus().getDateAndTime();
     EXPECT_EQ(registry.getIndex("P21000"), 1);
     EXPECT_EQ(registry.getPackages()[1].getPackageInfo(), correctString);
 }
