@@ -41,3 +41,11 @@ bool PackageRegistry::registerPackage(
 const vector<Package>& PackageRegistry::getPackages() const {
     return packages;
 }
+
+// Return the index of a package with a matching ID, if it exists. Returns -1 otherwise. 
+int PackageRegistry::getIndex(string id) const {
+    for (int i = 0; i < packages.size(); i++) {
+        if (packages[i].getPackageID().compare(id) == 0) return i;
+    }
+    return -1;
+}

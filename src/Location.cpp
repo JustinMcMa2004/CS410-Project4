@@ -21,3 +21,8 @@ Location::Location(
 bool Location::isValid() const {
     return !isBlank(address) && !isBlank(city) && !isBlank(state) && !isBlank(zipCode);
 }
+
+string Location::getLocation() const {
+    if (apartment.compare("") == 0) return address + " " + city + ", " + state + " " + zipCode;
+    else return address + ", Apt. " + apartment + " " + city + ", " + state + " " + zipCode;
+}
