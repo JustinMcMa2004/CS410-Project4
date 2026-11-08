@@ -48,6 +48,9 @@ public:
     // returns current status
     Status getCurrentStatus() const;
 
+    void addLocation(const Location&);
+    // void addLocation(Location);
+
     // Prints the currrent information of a package. 
     string getPackageInfo() const; 
 };

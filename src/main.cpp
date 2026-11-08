@@ -85,7 +85,7 @@ int main() {
             std::string id;
             readText("Tracking ID: ", id);
             int index = registry.getIndex(id);
-            std:string message;
+            std::string message;
             if (index == -1) message = "Invalid Tracking ID or Package does not exist.";
             else message = registry.getPackages()[index].getPackageInfo();
             std::cout << message << std::endl;

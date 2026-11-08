@@ -30,8 +30,6 @@ Package::Package(
         std::time_t currentTime = std::chrono::system_clock::to_time_t(systemTime);
         string currentTimeString = ctime(&currentTime);
         statusHistory.push_back(Status("Registered", currentTimeString));
-        // Placeholder to test the search feature. 
-        locationHistory.push_back(Location("123 Placeholder Street", "2", "Boston", "MA", "02118"));
 }
 
 bool Package::isValid() const {
@@ -54,6 +52,10 @@ Status Package::getCurrentStatus() const {
     return statusHistory.back(); 
 }
 
+void Package::addLocation(const Location& location) {
+    locationHistory.push_back(location);
+}
+
 string Package::getPackageInfo() const {
     string message = "Recipient: " + recipient + "\n";
     message += "Destination: " + destination.getLocation() + "\n";
@@ -66,6 +68,7 @@ string Package::getPackageInfo() const {
     if (isFragile) message += "Is Fragile?: Yes\n";
     else message += "Is Fragile?: No\n";
     if (locationHistory.size() > 0) message += "Current Location: " + locationHistory[locationHistory.size() - 1].getLocation() + "\n";
+    else message += "Current Location: Not yet available\n" ;
     if (statusHistory.size() > 0) { 
         message += "Status: " + statusHistory[statusHistory.size() - 1].getStatusMessage() + "\n";
         message += "Time (EST): " + statusHistory[statusHistory.size() - 1].getDateAndTime();
