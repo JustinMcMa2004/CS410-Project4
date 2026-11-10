@@ -55,8 +55,8 @@ Object Discovery Table (Current Build):
 | ------ | --------------- | ---------------- |
 | Location | address, apartment, city, state, zipCode | isValid() |
 | Status | statusMessage, date, time | readyToShip(), setTime(), getStatusMessage() |
-| Package | recipient, destination, packageID, dimensions, weight, requiresSignature, isFragile, locationHistory, statusHistory, intakeTime | isValid(), getPackageID(), getCurrentStatus() |
-| PackageRegistry | packages | registerPackage(), isRegistered(), getPackages() |
+| Package | recipient, destination, packageID, dimensions, weight, requiresSignature, isFragile, locationHistory, statusHistory, intakeTime | isValid(), getPackageID(), getPackageInfo(), getCurrentStatus() |
+| PackageRegistry | packages | registerPackage(), isRegistered(), getPackages(), getIndex() |
 | Product | quantity | hasEnough() |
 
 Object Discovery Table (Future):
@@ -75,7 +75,7 @@ Class Diagrams:
 
 | Location |
 | -------- |
-| - address : string  <br>- apartment : int <br>- city : string <br>- state : string <br>- zipCode : int |
+| - address : string  <br>- apartment : string <br>- city : string <br>- state : string <br>- zipCode : string |
 | + findDistance(destination : const Location&) : double <br>+ displayLocation() : void |
 
 | Status |
@@ -85,7 +85,7 @@ Class Diagrams:
 
 | Package |
 | ------- |
-| - recipient : string <br>- destination : Location <br>- packageID : int <br>- dimensions : vector< double > <br>- weight : double <br>- requiresSignature : bool <br>- isFragile : bool <br>- locationHistory : vector< Location > <br>- statusHistory : vector < Status > <br>- intakeTime : string <br>- deliveryAttempts : vector< DeliveryAttempt > |
+| - recipient : string <br>- destination : Location <br>- packageID : string <br>- dimensions : vector< double > <br>- weight : double <br>- requiresSignature : bool <br>- isFragile : bool <br>- locationHistory : vector< Location > <br>- statusHistory : vector < Status > <br>- intakeTime : string <br>- deliveryAttempts : vector< DeliveryAttempt > |
 | + getCurrentLocation() : Location <br>+ getCurrentStatus() : Status <br>+ isDelivered() : bool <br>+ updateStatus(newStatus : const Status&) : bool <br>+	getStatusHistory() : vector< Status > <br>+ addDeliveryAttempt(attempt : const DeliveryAttempt&) : bool <br>+ getDeliveryAttempts() : vector< DeliveryAttempt > |
 
 | Driver |
@@ -157,6 +157,7 @@ CS410-Project4/
 │   └── .gitkeep
 ├── tests/
 │   ├── test_package_registration.cpp
+│   ├── test_package_search.cpp
 │   ├── test_product.cpp
 │   └── .gitkeep
 ├── .gitignore
@@ -195,14 +196,30 @@ cmake --build build
 
 After building, run the executable from the repository root:
 
+**Linux/macOS:**
 ```bash
 ./build/MyProject
 ```
 
+**Window PowerShell(Ninja):**
+```bash
+.\build\MyProject.exe
+```
+
 ### Run Automated Tests
 
+**Run all tests:**
 ```bash
 ctest --test-dir build --output-on-failure
 ```
 
+**Run only the package search tests:**
+```bash
+ctest --test-dir build -R '^PackageSearchTest\.' --output-on-failure
+```
+
 The project uses GoogleTest for automated testing. These commands have been verified on Windows using CMake and the GNU C++ compiler.
+
+The search tests cover invalid tracking IDs, empty IDs, optional apartment information, unavailable current locations, and package lookup among multiple registered packages.
+
+The program's interactive menu can also be tested manually using the steps in the Using the Application section.
