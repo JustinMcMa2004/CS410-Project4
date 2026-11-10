@@ -27,7 +27,7 @@ Open questions:
 5. What information should be used to identify a package?
 6. What information should be updated and stored in a package’s delivery history from intake to delivery?
 7. How should users be able to search for packages?
-8. How should packages enter the system? Are they registered at a company facility, received from external sellers such Amazon, or submitted through another process?
+8. How should packages enter the system? Are they registered at a company facility, received from external sellers such as Amazon, or submitted through another process?
 9. Who should be notified when package information or status is updated?
 10. How should packages be assigned to delivery drivers? Should assignments be automatic or manual, and should they be based on factors such as the package’s destination area?
 11. What delivery statuses should the system support, and how can the status change?
@@ -201,7 +201,7 @@ After building, run the executable from the repository root:
 ./build/MyProject
 ```
 
-**Window PowerShell(Ninja):**
+**Windows PowerShell (Ninja):**
 ```bash
 .\build\MyProject.exe
 ```
@@ -223,3 +223,34 @@ The project uses GoogleTest for automated testing. These commands have been veri
 The search tests cover invalid tracking IDs, empty IDs, optional apartment information, unavailable current locations, and package lookup among multiple registered packages.
 
 The program's interactive menu can also be tested manually using the steps in the Using the Application section.
+
+
+## Using the Application
+
+The program opens with this menu.
+
+```text
+Package Management System
+2. View existing package
+1. Register package
+0. Exit
+Choice:
+```
+
+Enter a menu number and press Enter. After registration or lookup, the menu appears again. The registry starts empty and keeps packages in memory for the current session. Choose `0` to exit.
+
+### Register a Package
+
+Choose `1` and enter each value on its own line.
+
+1. Enter a unique tracking ID and the recipient's name.
+2. Enter the destination street address, apartment, city, state, and ZIP code. Press Enter at the apartment prompt to leave it blank. The ZIP code is read as text, so a leading zero is preserved.
+3. Enter the length, width, and height in inches, then the weight in pounds. Each measurement must be a positive, finite number. The program repeats the measurement prompt if the input is invalid.
+
+Successful registration prints the tracking ID, the initial status (`Registered`), and the total number of packages in the session. A duplicate ID or missing required text causes registration to fail and returns you to the menu.
+
+### Look Up a Package by Tracking ID
+
+Choose `2` and enter the tracking ID used during registration. The lookup is case-sensitive. A match displays the recipient, destination, tracking ID, dimensions, weight, signature and fragile flags, current location, status, and timestamp. Packages registered through this menu default both flags to `No` and show `Current Location: Not yet available`.
+
+If there is no match in the current session, the program displays `Invalid Tracking ID or Package does not exist.`
