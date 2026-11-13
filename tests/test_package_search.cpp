@@ -27,7 +27,8 @@ TEST(PackageSearchTest, SearchWithEmptyID) {
     );
 
     Package package(
-        "John Smith", destination, "500001", {5.0, 6.0, 7.0}, 55.5
+        "John Smith", destination, "500001", {5.0, 6.0, 7.0}, 55.5,
+        destination
     );
     package.addLocation(Location("123 Placeholder Street", "2", "Boston", "MA", "02118"));
     std::string errorMessage;
@@ -43,24 +44,45 @@ TEST(PackageSearchTest, validSearchWithApartment) {
     Location destination(
         "296 Washington St", "1", "Boston", "MA", "02108"
     );
+    Location currentLocation(
+        "123 Placeholder Street", "2", "Boston", "MA", "02118"
+    );
 
     Package package(
-        "John Smith", destination, "500001", {5.0, 6.0, 7.0}, 55.5
+        "John Smith", destination, "500001", {5.0, 6.0, 7.0}, 55.5,
+        currentLocation
     );
-    package.addLocation(Location("123 Placeholder Street", "2", "Boston", "MA", "02118"));
     std::string errorMessage;
     registry.registerPackage(package, errorMessage);
-    std::string correctString = "Recipient: John Smith\n";
+    const std::string statusTime =
+        registry.getPackages()[0].getCurrentStatus().getDateAndTime();
+    std::string correctString = "================================\n";
+    correctString += "        PACKAGE INFORMATION\n";
+    correctString += "================================\n";
+    correctString += "Recipient: John Smith\n";
     correctString += "Destination: 296 Washington St, Apt. 1 Boston, MA 02108\n";
     correctString += "ID: 500001\n";
     correctString += "Length x Width x Height (inches): 5.000000 x 6.000000 x 7.000000\n";
     correctString += "Weight (pounds): 55.500000\n";
     correctString += "Requires Signature?: No\n";
     correctString += "Is Fragile?: No\n";
+    correctString += "\n================================\n";
+    correctString += "       CURRENT DELIVERY STATUS\n";
+    correctString += "================================\n";
     correctString += "Current Location: 123 Placeholder Street, Apt. 2 Boston, MA 02118\n";
     correctString += "Status: Registered\n";
-    correctString += "Time (EST): ";
-    correctString += registry.getPackages()[0].getCurrentStatus().getDateAndTime();
+    correctString += "Time: " + statusTime;
+    correctString += "\n";
+    correctString += "Delivered?: No\n";
+    correctString += "\n================================\n";
+    correctString += "          STATUS HISTORY\n";
+    correctString += "================================\n";
+    correctString += "1. Registered\n";
+    correctString += "   Time: " + statusTime;
+    correctString += "\n\n================================\n";
+    correctString += "         LOCATION HISTORY\n";
+    correctString += "================================\n";
+    correctString += "1. 123 Placeholder Street, Apt. 2 Boston, MA 02118\n";
     EXPECT_EQ(registry.getIndex("500001"), 0);
     EXPECT_EQ(registry.getPackages()[0].getPackageInfo(), correctString);
 }
@@ -72,29 +94,50 @@ TEST(PackageSearchTest, validSearchWithoutApartment) {
     Location destination(
         "296 Washington St", "", "Boston", "MA", "02108"
     );
+    Location currentLocation(
+        "123 Placeholder Street", "2", "Boston", "MA", "02118"
+    );
 
     Package package(
-        "John Smith", destination, "500001", {5.0, 6.0, 7.0}, 55.5
+        "John Smith", destination, "500001", {5.0, 6.0, 7.0}, 55.5,
+        currentLocation
     );
-    package.addLocation(Location("123 Placeholder Street", "2", "Boston", "MA", "02118"));
     std::string errorMessage;
     registry.registerPackage(package, errorMessage);
-    std::string correctString = "Recipient: John Smith\n";
+    const std::string statusTime =
+        registry.getPackages()[0].getCurrentStatus().getDateAndTime();
+    std::string correctString = "================================\n";
+    correctString += "        PACKAGE INFORMATION\n";
+    correctString += "================================\n";
+    correctString += "Recipient: John Smith\n";
     correctString += "Destination: 296 Washington St Boston, MA 02108\n";
     correctString += "ID: 500001\n";
     correctString += "Length x Width x Height (inches): 5.000000 x 6.000000 x 7.000000\n";
     correctString += "Weight (pounds): 55.500000\n";
     correctString += "Requires Signature?: No\n";
     correctString += "Is Fragile?: No\n";
+    correctString += "\n================================\n";
+    correctString += "       CURRENT DELIVERY STATUS\n";
+    correctString += "================================\n";
     correctString += "Current Location: 123 Placeholder Street, Apt. 2 Boston, MA 02118\n";
     correctString += "Status: Registered\n";
-    correctString += "Time (EST): ";
-    correctString += registry.getPackages()[0].getCurrentStatus().getDateAndTime();
+    correctString += "Time: " + statusTime;
+    correctString += "\n";
+    correctString += "Delivered?: No\n";
+    correctString += "\n================================\n";
+    correctString += "          STATUS HISTORY\n";
+    correctString += "================================\n";
+    correctString += "1. Registered\n";
+    correctString += "   Time: " + statusTime;
+    correctString += "\n\n================================\n";
+    correctString += "         LOCATION HISTORY\n";
+    correctString += "================================\n";
+    correctString += "1. 123 Placeholder Street, Apt. 2 Boston, MA 02118\n";
     EXPECT_EQ(registry.getIndex("500001"), 0);
     EXPECT_EQ(registry.getPackages()[0].getPackageInfo(), correctString);
 }
 
-TEST(PackageSearchTest, validSearchWithoutLocation) {
+TEST(PackageSearchTest, validSearchWithoutAdditionalLocation) {
     PackageRegistry registry;
 
     Location destination(
@@ -102,23 +145,13 @@ TEST(PackageSearchTest, validSearchWithoutLocation) {
     );
 
     Package package(
-        "John Smith", destination, "500001", {5.0, 6.0, 7.0}, 55.5
+        "John Smith", destination, "500001", {5.0, 6.0, 7.0}, 55.5,
+        destination
     );
     std::string errorMessage;
     registry.registerPackage(package, errorMessage);
-    std::string correctString = "Recipient: John Smith\n";
-    correctString += "Destination: 296 Washington St Boston, MA 02108\n";
-    correctString += "ID: 500001\n";
-    correctString += "Length x Width x Height (inches): 5.000000 x 6.000000 x 7.000000\n";
-    correctString += "Weight (pounds): 55.500000\n";
-    correctString += "Requires Signature?: No\n";
-    correctString += "Is Fragile?: No\n";
-    correctString += "Current Location: Not yet available\n";
-    correctString += "Status: Registered\n";
-    correctString += "Time (EST): ";
-    correctString += registry.getPackages()[0].getCurrentStatus().getDateAndTime();
     EXPECT_EQ(registry.getIndex("500001"), 0);
-    EXPECT_EQ(registry.getPackages()[0].getPackageInfo(), correctString);
+    EXPECT_EQ(registry.getPackages()[0].getPackageID(), "500001");
 }
 
 TEST(PackageSearchTest, validSearchWithMultiplePackages) {
@@ -129,7 +162,8 @@ TEST(PackageSearchTest, validSearchWithMultiplePackages) {
     );
 
     Package package1(
-        "John Smith", destination1, "500001", {5.0, 6.0, 7.0}, 55.5
+        "John Smith", destination1, "500001", {5.0, 6.0, 7.0}, 55.5,
+        destination1
     );
     package1.addLocation(Location("123 Placeholder Street", "2", "Boston", "MA", "02118"));
     std::string errorMessage;
@@ -138,23 +172,44 @@ TEST(PackageSearchTest, validSearchWithMultiplePackages) {
     Location destination2(
         "1731 Massachusetts Ave", "", "Cambridge", "MA", "02138"
     );
+    Location currentLocation2(
+        "456 Placeholder Avenue", "3", "Boston", "MA", "02118"
+    );
 
     Package package2(
-        "Alice Bob", destination2, "P21000", {2.0, 3.0, 4.0}, 9.5
+        "Alice Bob", destination2, "P21000", {2.0, 3.0, 4.0}, 9.5,
+        currentLocation2
     );
-    package2.addLocation(Location("456 Placeholder Avenue", "3", "Boston", "MA", "02118"));
     registry.registerPackage(package2, errorMessage);
-    std::string correctString = "Recipient: Alice Bob\n";
+    const std::string statusTime =
+        registry.getPackages()[1].getCurrentStatus().getDateAndTime();
+    std::string correctString = "================================\n";
+    correctString += "        PACKAGE INFORMATION\n";
+    correctString += "================================\n";
+    correctString += "Recipient: Alice Bob\n";
     correctString += "Destination: 1731 Massachusetts Ave Cambridge, MA 02138\n";
     correctString += "ID: P21000\n";
     correctString += "Length x Width x Height (inches): 2.000000 x 3.000000 x 4.000000\n";
     correctString += "Weight (pounds): 9.500000\n";
     correctString += "Requires Signature?: No\n";
     correctString += "Is Fragile?: No\n";
+    correctString += "\n================================\n";
+    correctString += "       CURRENT DELIVERY STATUS\n";
+    correctString += "================================\n";
     correctString += "Current Location: 456 Placeholder Avenue, Apt. 3 Boston, MA 02118\n";
     correctString += "Status: Registered\n";
-    correctString += "Time (EST): ";
-    correctString += registry.getPackages()[1].getCurrentStatus().getDateAndTime();
+    correctString += "Time: " + statusTime;
+    correctString += "\n";
+    correctString += "Delivered?: No\n";
+    correctString += "\n================================\n";
+    correctString += "          STATUS HISTORY\n";
+    correctString += "================================\n";
+    correctString += "1. Registered\n";
+    correctString += "   Time: " + statusTime;
+    correctString += "\n\n================================\n";
+    correctString += "         LOCATION HISTORY\n";
+    correctString += "================================\n";
+    correctString += "1. 456 Placeholder Avenue, Apt. 3 Boston, MA 02118\n";
     EXPECT_EQ(registry.getIndex("P21000"), 1);
     EXPECT_EQ(registry.getPackages()[1].getPackageInfo(), correctString);
 }

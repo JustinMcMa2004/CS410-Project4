@@ -43,6 +43,7 @@ add_executable(product_tests
     tests/test_product.cpp
     tests/test_package_registration.cpp
     tests/test_package_search.cpp
+    tests/test_package_status_history.cpp
 )
 
 target_link_libraries(product_tests

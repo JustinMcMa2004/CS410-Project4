@@ -53,22 +53,27 @@ int main() {
         }
         if (choice == 0) break;
         if (choice == 1) {
-            std::string id, recipient, address, apartment, city, state, zip;
+            std::string id, recipient, address, apartment, city, state, zip, facility, currentCity, currentState, currentZip;
             double length, width, height, weight;
             if (!readText("Tracking ID: ", id) ||
                 !readText("Recipient: ", recipient) ||
-                !readText("Street address: ", address) ||
+                !readText("Destination Address:\nStreet address: ", address) ||
                 !readText("Apartment (optional): ", apartment) ||
                 !readText("City: ", city) ||
                 !readText("State: ", state) ||
                 !readText("ZIP code: ", zip) ||
+                !readText("Intial Package Location:\nFacility: ", facility) ||
+                !readText("City: ", currentCity) ||
+                !readText("State: ", currentState) ||
+                !readText("ZIP code: ", currentZip) ||
                 !readPositiveDouble("Length (inches): ", length) ||
                 !readPositiveDouble("Width (inches): ", width) ||
                 !readPositiveDouble("Height (inches): ", height) ||
                 !readPositiveDouble("Weight (pounds): ", weight)) break;
             // Create a package using the provided information.
             Location destination(address, apartment, city, state, zip);
-            Package package(recipient, destination, id, {length, width, height}, weight);
+            Location initialLocation(facility, "", currentCity, currentState, currentZip);
+            Package package(recipient, destination, id, {length, width, height}, weight, initialLocation);
             
             std::string error;
             

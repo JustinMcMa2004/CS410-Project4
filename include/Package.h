@@ -21,6 +21,7 @@ private:
     double weight;
     bool requiresSignature;
     bool isFragile;
+    Location currentLocation;
 
     vector<Location> locationHistory;
     vector<Status> statusHistory;
@@ -36,6 +37,7 @@ public:
         const string& packageID,
         const vector<double>& dimensions,
         double weight,
+        const Location& currentLocation,
         bool requiresSignature = false,
         bool isFragile = false
     );
@@ -48,11 +50,25 @@ public:
     // returns current status
     Status getCurrentStatus() const;
 
-    void addLocation(const Location&);
-    // void addLocation(Location);
+    // returns package's status history
+    vector<Status> getStatusHistory() const;
 
+    //adds new status to working status history
+    void updateStatus(const Status&);
+ 
+    // returns current Location
+    Location getCurrentLocation() const;
+
+    // returns package's status history
+    vector<Location> getLocationHistory() const;
+
+    // Adds new location to working location history
+    void addLocation(const Location&);
+    
     // Prints the currrent information of a package. 
     string getPackageInfo() const; 
+
+    bool isDelivered() const;
 };
 
 #endif
