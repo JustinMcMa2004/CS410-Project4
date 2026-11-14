@@ -23,7 +23,7 @@ TEST(PackageRegistrationTest, RegistersValidPackage) {
 
     Package package(
         "Alex Smith", destination, "PKG001",
-        {10.0, 5.0, 4.0}, 2.5
+        {10.0, 5.0, 4.0}, 2.5, destination
     );
 
     EXPECT_TRUE(registry.registerPackage(package, errorMessage));
@@ -44,7 +44,7 @@ TEST(PackageRegistrationTest, RejectsInvalidPackage) {
 
     Package package(
         "", destination, "PKG002",
-        {10.0, 5.0, 4.0}, 2.5
+        {10.0, 5.0, 4.0}, 2.5, destination
     );
 
     EXPECT_FALSE(registry.registerPackage(package, errorMessage));
@@ -67,12 +67,12 @@ TEST(PackageRegistrationTest, RejectsDuplicateTrackingID) {
 
     Package firstPackage(
         "Alex Smith", destination, "PKG003",
-        {10.0, 5.0, 4.0}, 2.5
+        {10.0, 5.0, 4.0}, 2.5, destination
     );
 
     Package duplicatePackage(
         "Jordan Lee", destination, "PKG003",
-        {8.0, 4.0, 3.0}, 1.5
+        {8.0, 4.0, 3.0}, 1.5, destination
     );
 
     ASSERT_TRUE(registry.registerPackage(firstPackage, errorMessage));
@@ -98,7 +98,7 @@ TEST(PackageRegistrationTest, RejectsWhitespaceOnlyRecipient) {
 
     Package package(
         "   ", destination, "PKG004",
-        {10.0, 5.0, 4.0}, 2.5
+        {10.0, 5.0, 4.0}, 2.5, destination
     );
 
     EXPECT_FALSE(registry.registerPackage(package, errorMessage));
@@ -119,7 +119,7 @@ TEST(PackageRegistrationTest, RejectsWhitespaceOnlyStreetAddress) {
 
     Package package(
         "Alex Smith", destination, "PKG005",
-        {10.0, 5.0, 4.0}, 2.5
+        {10.0, 5.0, 4.0}, 2.5, destination
     );
 
     EXPECT_FALSE(registry.registerPackage(package, errorMessage));
@@ -141,7 +141,7 @@ TEST(PackageRegistrationTest, RejectsWhitespaceOnlyTrackingID) {
 
     Package package(
         "Alex Smith", destination, "   ",
-        {10.0, 5.0, 4.0}, 2.5
+        {10.0, 5.0, 4.0}, 2.5, destination
     );
 
     EXPECT_FALSE(registry.registerPackage(package, errorMessage));
