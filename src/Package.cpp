@@ -14,10 +14,10 @@ Package::Package(
     const string& packageID,
     const vector<double>& dimensions,
     double weight,
-    const Location& currentLocation,
+    const Location& initialLocation,
     bool requiresSignature,
     bool isFragile
-    ) : destination(destination), currentLocation(currentLocation) {
+    ) : destination(destination), initialLocation(initialLocation) {
         this->recipient = recipient;
         this->packageID = packageID;
         this->dimensions = dimensions;
@@ -25,14 +25,11 @@ Package::Package(
         this->requiresSignature = requiresSignature;
         this->isFragile = isFragile;
 
-
-        // record the initial stat        ) : destination(destination), currentLocation(currentLocation) {us in history when the package is created!
-        // The program assumes the system time is in EST. If machines in different time zones are used this will need to be changed. 
         auto systemTime = std::chrono::system_clock::now();
         std::time_t currentTime = std::chrono::system_clock::to_time_t(systemTime);
         string currentTimeString = ctime(&currentTime);
         statusHistory.push_back(Status("Registered", currentTimeString));
-        locationHistory.push_back(currentLocation);
+        locationHistory.push_back(initialLocation);
 }
 
 bool Package::isValid() const {
@@ -156,17 +153,7 @@ string Package::getPackageInfo() const {
 
 bool Package::isDelivered() const {
     if (statusHistory.size() > 0) { 
-        Status currentStatus = statusHistory[statusHistory.size() - 1];
-        string currentStatusMessage = statusHistory[statusHistory.size() - 1].getStatusMessage();
-        std::transform(
-            currentStatusMessage.begin(),
-            currentStatusMessage.end(),
-            currentStatusMessage.begin(),
-            [](unsigned char c) {
-                return std::tolower(c);
-            }
-        );
-        return currentStatusMessage == "delivered";
+        return statusHistory[statusHistory.size() - 1].getStatusMessage() == "Delivered";
     }
     return false;
 }

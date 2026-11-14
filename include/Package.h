@@ -21,7 +21,7 @@ private:
     double weight;
     bool requiresSignature;
     bool isFragile;
-    Location currentLocation;
+    Location initialLocation;
 
     vector<Location> locationHistory;
     vector<Status> statusHistory;

@@ -1,11 +1,11 @@
 /*
-Test checks if
 
-1. Trying to search for a package that does not exist fails. 
-2. Trying to search for a package with an empty ID fails. 
-3. Trying to serach for a package with a matching ID and no apartment # works. 
-4. Trying to search for a package with a matching ID an apartment # works. 
-
+Trying to search for a package that does not exist fails.
+Trying to search for a package with an empty ID fails.
+Trying to serach for a package with a matching ID and no apartment # works.
+Trying to search for a package with a matching ID an apartment # works.
+Trying to search for a package with no location works.
+Trying to search for a package in a registry of multiple packages works.
 */
 
 

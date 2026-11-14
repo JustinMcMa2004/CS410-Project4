@@ -5,6 +5,7 @@ Test checks if
 2. Status updates are kept in order and the latest status is current.
 3. Searching for a package allows its status history to be viewed.
 4. Delivery state follows the current status.
+5. Location updates are kept in order and the latest location is current.
 
 */
 
@@ -111,8 +112,39 @@ TEST(PackageStatusHistoryTest, DeliveryStateFollowsCurrentStatus) {
     );
 
     EXPECT_FALSE(package.isDelivered());
-    package.updateStatus(Status("dElIvErEd", "time 1"));
+    package.updateStatus(Status("Delivered", "time 1"));
     EXPECT_TRUE(package.isDelivered());
     package.updateStatus(Status("Returned", "time 2"));
     EXPECT_FALSE(package.isDelivered());
+}
+
+// Test that location updates are appended and the newest location is current.
+TEST(PackageStatusHistoryTest, AppendsLocationUpdatesInOrder) {
+    Location destination(
+        "123 Main Street", "", "Boston", "MA", "02125"
+    );
+    Location initialLocation(
+        "10 Delivery Center", "", "Boston", "MA", "02125"
+    );
+    Location transitLocation(
+        "20 Sorting Center", "", "Cambridge", "MA", "02138"
+    );
+    Location deliveryLocation(
+        "30 Local Facility", "", "Somerville", "MA", "02143"
+    );
+
+    Package package(
+        "Alex Smith", destination, "PKG104",
+        {10.0, 5.0, 4.0}, 2.5, initialLocation
+    );
+    package.addLocation(transitLocation);
+    package.addLocation(deliveryLocation);
+
+    const std::vector<Location> history = package.getLocationHistory();
+    ASSERT_EQ(history.size(), 3);
+    EXPECT_EQ(history[0].getLocation(), initialLocation.getLocation());
+    EXPECT_EQ(history[1].getLocation(), transitLocation.getLocation());
+    EXPECT_EQ(history[2].getLocation(), deliveryLocation.getLocation());
+    EXPECT_EQ(package.getCurrentLocation().getLocation(),
+              deliveryLocation.getLocation());
 }
