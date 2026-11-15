@@ -49,3 +49,37 @@ int PackageRegistry::getIndex(string id) const {
     }
     return -1;
 }
+
+// Update the delivery status of a registered package.
+bool PackageRegistry::updatePackageStatus(
+    const string& packageID,
+    const string& newStatus,
+    string& errorMessage
+) {
+    // Find the package by its tracking ID.
+    int index = getIndex(packageID);
+
+    if (index == -1) {
+        errorMessage = "package not found.";
+        return false;
+    }
+
+    // Only allow valid delivery statuses.
+    if (newStatus != "Ready to be Delivered" &&
+        newStatus != "Out for Delivery" &&
+        newStatus != "Delivered" &&
+        newStatus != "Delivery Failed") {
+        errorMessage = "invalid delivery status.";
+        return false;
+    }
+
+    // Create the new status and record its timestamp.
+    Status status(newStatus, "");
+    status.setTime();
+
+    // Save the updated status in the package's history.
+    packages[index].updateStatus(status);
+
+    errorMessage.clear();
+    return true;
+}

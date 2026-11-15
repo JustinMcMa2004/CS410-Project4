@@ -46,8 +46,13 @@ int main() {
     PackageRegistry registry;
     std::cout << "Package Management System\n";
     int choice;
-    while (readPositiveInt("2. View existing package\n1. Register package\n0. Exit\nChoice: ", choice)) {
-        if (choice > 2 || choice < 0) {
+    while (readPositiveInt(
+        "3. Update package status\n"
+        "2. View existing package\n"
+        "1. Register package\n"
+        "0. Exit\nChoice: ", choice)) {
+
+        if (choice > 3 || choice < 0) {
             std::cout << "Please select one of the values listed.\n";
             continue;
         }
@@ -94,6 +99,49 @@ int main() {
             if (index == -1) message = "Invalid Tracking ID or Package does not exist.";
             else message = registry.getPackages()[index].getPackageInfo();
             std::cout << message << std::endl;
+        }
+        if (choice == 3) {
+            std::string id;
+            std::string statusChoice;
+            std::string newStatus;
+            std::string errorMessage;
+
+            if (!readText("Tracking ID: ", id)) break;
+
+            std::cout << "Select new status:\n"
+                      << "1. Ready to be Delivered\n"
+                      << "2. Out for Delivery\n"
+                      << "3. Delivered\n"
+                      << "4. Delivery Failed\n";
+
+            if (!readText("Choice: ", statusChoice)) break;
+
+            if (statusChoice == "1") {
+                newStatus = "Ready to be Delivered";
+            }
+            else if (statusChoice == "2") {
+                newStatus = "Out for Delivery";
+            }
+            else if (statusChoice == "3") {
+                newStatus = "Delivered";
+            }
+            else if (statusChoice == "4") {
+                newStatus = "Delivery Failed";
+            }
+            else {
+                std::cout << "Invalid status selection.\n";
+                continue;
+            }
+
+            if (registry.updatePackageStatus(id, newStatus, errorMessage)) {
+                std::cout << "Status updated successfully!\n"
+                          << "Tracking ID: " << id << "\n"
+                          << "Current Status: " << newStatus << "\n";
+            }
+            else {
+                std::cout << "Status update failed: "
+                          << errorMessage << "\n";
+            }
         }
     }
     return 0;

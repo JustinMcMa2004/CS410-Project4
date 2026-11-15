@@ -27,6 +27,14 @@ public:
 
     // Finds the matching index of a package with the same provided id, if it exists. Returns -1 otherwise. 
     int getIndex(string) const; 
+
+    // Update a registered package's delivery status.
+    // Return false if the package or status is invalid.
+    bool updatePackageStatus(
+        const string& packageID,
+        const string& newStatus,
+        string& errorMessage
+    );
 };
 
 #endif
