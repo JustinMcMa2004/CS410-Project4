@@ -3,6 +3,8 @@
 #ifndef PACKAGE_H
 #define PACKAGE_H
 
+#include <chrono>
+#include <ctime>
 #include <string>
 #include <vector>
 #include "Location.h"
@@ -25,7 +27,7 @@ private:
 
     vector<Location> locationHistory;
     vector<Status> statusHistory;
-    string intakeTime;
+    std::chrono::system_clock::time_point intakeTime;
     // add later:
     // vector<DeliveryAttempt> deliveryAttempts;
 
@@ -39,13 +41,21 @@ public:
         double weight,
         const Location& currentLocation,
         bool requiresSignature = false,
-        bool isFragile = false
+        bool isFragile = false,
+        std::chrono::system_clock::time_point intakeTime = std::chrono::system_clock::now()
     );
 
     bool isValid() const;
 
     // returns the package's tracking ID
     string getPackageID() const;
+
+    // return the time when the package was registered
+    std::chrono::system_clock::time_point getIntakeTime() const;
+
+
+    // return package's delivery destination
+    Location getDestination() const;
 
     // returns current status
     Status getCurrentStatus() const;

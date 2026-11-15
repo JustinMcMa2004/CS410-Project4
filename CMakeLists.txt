@@ -22,6 +22,8 @@ add_library(product
     src/Status.cpp 
     src/Package.cpp
     src/PackageRegistry.cpp
+    src/Driver.cpp
+    src/DriverAssignmentManager.cpp
 )
 
 target_include_directories(product
@@ -44,6 +46,7 @@ add_executable(product_tests
     tests/test_package_registration.cpp
     tests/test_package_search.cpp
     tests/test_package_status_history.cpp
+    tests/test_driver_assignment.cpp
 )
 
 target_link_libraries(product_tests

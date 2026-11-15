@@ -26,3 +26,12 @@ string Location::getLocation() const {
     if (apartment.compare("") == 0) return address + " " + city + ", " + state + " " + zipCode;
     else return address + ", Apt. " + apartment + " " + city + ", " + state + " " + zipCode;
 }
+
+
+string Location::getCity() const {
+    return city;
+}
+
+string Location::getState() const {
+    return state;
+}
