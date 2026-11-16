@@ -1,4 +1,6 @@
 #include "DriverAssignmentManager.h"
+#include <stdexcept>
+
 
 using std::string;
 using std::vector;
@@ -25,7 +27,7 @@ bool DriverAssignmentManager::addDriver(const Driver& driver) {
     return true;
 }
 
-// attemps to assign a registered package to a driver. 
+// attempts to assign a registered package to a driver. 
 // will return true if success, or false with an error message
 bool DriverAssignmentManager::assignPackage(
     const string& packageID,
@@ -83,7 +85,14 @@ bool DriverAssignmentManager::assignPackage(
         }
 
         // find driver's next depature after our earliest allowed time
-        auto departure = driver.getNextDeparture(earliestTime);
+        std::chrono::system_clock::time_point departure;
+
+        try {
+            departure = driver.getNextDeparture(earliestTime);
+        } catch (const std::runtime_error& error) {
+            errorMessage = error.what();
+            return false;
+        }
 
         // select this driver if no driver assigned yet, OR this driver departs earlier than our current best driver
         if (bestDriver == nullptr || departure < bestDeparture) {

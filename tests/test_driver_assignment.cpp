@@ -5,6 +5,18 @@
 #include <chrono>
 #include <ctime>
 
+/*
+
+Tests driver assignment feature
+
+Covers delivery area matching, departure scheduling,
+successful & unsuccessful package assignments,
+driver validation and duplicate assignments
+
+
+
+*/
+
 
 // Creates a fixed local date and time for testing driver schedules.
 static std::chrono::system_clock::time_point makeTestTime(
@@ -246,6 +258,8 @@ TEST(DriverAssignmentTest, RejectInvalidDriver) {
     DriverAssignmentManager manager(registry);
 
     Driver invalidTime("D001", "Boston", "MA", 25, 70);
+    Driver negativeHour("D004", "Boston", "MA", -1, 30);
+    Driver negativeMinute("D005", "Boston", "MA", 11, -1);
     Driver missingID("", "Boston", "MA", 11, 30);
     Driver missingCity("D002", "   ", "MA", 11, 30);
     Driver validDriver("D003", "Boston", "MA", 11, 30);
@@ -254,6 +268,8 @@ TEST(DriverAssignmentTest, RejectInvalidDriver) {
     EXPECT_FALSE(manager.addDriver(missingID));
     EXPECT_FALSE(manager.addDriver(missingCity));
     EXPECT_TRUE(manager.addDriver(validDriver));
+    EXPECT_FALSE(manager.addDriver(negativeHour));
+    EXPECT_FALSE(manager.addDriver(negativeMinute));
 }
 
 
@@ -334,4 +350,57 @@ TEST(DriverAssignmentTest, SameDepartureTime) {
     EXPECT_EQ(manager.getAssignments()[0].driverID, "D001");
     EXPECT_EQ(manager.getAssignments()[0].departureTime,
               makeTestTime(15, 11, 0));
+}
+
+
+// A package cannot be assigned if no drivers are registered.
+TEST(DriverAssignmentTest, NoRegisteredDrivers) {
+    Location destination("123 Main St", "", "Boston", "MA", "02118");
+
+    Package package("John Smith", destination, "PKG009",
+                    {10, 8, 6}, 5.0, destination);
+
+    package.updateStatus(Status("Ready to be Delivered", "Test time"));
+
+    PackageRegistry registry;
+    std::string errorMessage;
+    ASSERT_TRUE(registry.registerPackage(package, errorMessage));
+
+    // Create the manager without registering any drivers.
+    DriverAssignmentManager manager(registry);
+
+    EXPECT_FALSE(manager.assignPackage("PKG009", errorMessage));
+    EXPECT_EQ(errorMessage, "no driver serves this delivery area.");
+    EXPECT_TRUE(manager.getAssignments().empty());
+}
+
+
+// A driver cannot depart before the package's intake time.
+TEST(DriverAssignmentTest, PackageArrivesAfterDeparture) {
+    Location destination("123 Main St", "", "Boston", "MA", "02118");
+
+    // Package arrives January 15 at 12:00 PM.
+    auto intakeTime = makeTestTime(15, 12, 0);
+
+    Package package("John Smith", destination, "PKG010",
+                    {10, 8, 6}, 5.0, destination,
+                    false, false, intakeTime);
+
+    package.updateStatus(Status("Ready to be Delivered", "Test time"));
+
+    PackageRegistry registry;
+    std::string errorMessage;
+    ASSERT_TRUE(registry.registerPackage(package, errorMessage));
+
+    DriverAssignmentManager manager(registry);
+    ASSERT_TRUE(manager.addDriver(Driver("D001", "Boston", "MA", 8, 0)));
+
+    // Current time is earlier than the package's intake time.
+    auto testTime = makeTestTime(15, 9, 0);
+
+    EXPECT_TRUE(manager.assignPackage("PKG010", errorMessage, testTime));
+
+    ASSERT_EQ(manager.getAssignments().size(), 1u);
+    EXPECT_EQ(manager.getAssignments()[0].departureTime,
+              makeTestTime(16, 8, 0));
 }
