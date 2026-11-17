@@ -1,3 +1,12 @@
+// Package delivery status update tests.
+//
+// Tests included:
+// 1. UpdateStatusSuccessfully - Verify that a valid status update succeeds.
+// 2. RetainUpdatedStatus - Verify that the updated status is retained.
+// 3. RejectInvalidStatus - Reject unsupported delivery statuses.
+// 4. RejectUnknownTrackingID - Reject updates for unknown tracking IDs.
+// 5. PreserveStatusHistory - Verify that previous statuses remain in history.
+
 #include <gtest/gtest.h>
 #include "PackageRegistry.h"
 #include "Status.h"

@@ -3,6 +3,14 @@
 using std::string;
 using std::vector;
 
+// Check whether a delivery status is valid.
+static bool isValidDeliveryStatus(const string& status) {
+    return status == "Ready to be Delivered" ||
+           status == "Out for Delivery" ||
+           status == "Delivered" ||
+           status == "Delivery Failed";
+}
+
 // check whether a package with this tracking ID already exists
 bool PackageRegistry::isRegistered(const string& packageID) const {
     for (const Package& package : packages) {
@@ -65,15 +73,12 @@ bool PackageRegistry::updatePackageStatus(
     }
 
     // Only allow valid delivery statuses.
-    if (newStatus != "Ready to be Delivered" &&
-        newStatus != "Out for Delivery" &&
-        newStatus != "Delivered" &&
-        newStatus != "Delivery Failed") {
+    if (!isValidDeliveryStatus(newStatus)) {
         errorMessage = "invalid delivery status.";
         return false;
     }
 
-    // Create the new status and record its timestamp.
+    // Create a status object and set its timestamp to the current time.
     Status status(newStatus, "");
     status.setTime();
 

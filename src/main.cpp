@@ -108,12 +108,25 @@ int main() {
 
             if (!readText("Tracking ID: ", id)) break;
 
+            // Find the package by its tracking ID.
+            int index = registry.getIndex(id);
+
+            if (index == -1) {
+                std::cout << "Package not found.\n";
+                continue;
+            }
+
+            // Show the current status before updating it.
+            std::string currentStatus =
+                registry.getPackages()[index].getCurrentStatus().getStatusMessage();
+
+            std::cout << "Current Status: " << currentStatus << "\n\n";
+
             std::cout << "Select new status:\n"
                       << "1. Ready to be Delivered\n"
                       << "2. Out for Delivery\n"
                       << "3. Delivered\n"
                       << "4. Delivery Failed\n";
-
             if (!readText("Choice: ", statusChoice)) break;
 
             if (statusChoice == "1") {
