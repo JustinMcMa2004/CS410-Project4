@@ -6,7 +6,7 @@ using std::string;
 using std::vector;
 
 DriverAssignmentManager::DriverAssignmentManager(
-    const PackageRegistry& registry
+    PackageRegistry& registry
 ) : registry(registry) {
 }
 
@@ -104,6 +104,10 @@ bool DriverAssignmentManager::assignPackage(
     // if no driver serves the delivery area, we couldn't assign a driver to this package
     if (bestDriver == nullptr) {
         errorMessage = "no driver serves this delivery area.";
+        return false;
+    }
+
+    if (!registry.updatePackageStatus(packageID, "Assigned", errorMessage)) {
         return false;
     }
 

@@ -6,6 +6,7 @@ using std::vector;
 // Check whether a delivery status is valid.
 static bool isValidDeliveryStatus(const string& status) {
     return status == "Ready to be Delivered" ||
+            status == "Assigned" ||
            status == "Out for Delivery" ||
            status == "Delivered" ||
            status == "Delivery Failed";

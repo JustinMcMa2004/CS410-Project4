@@ -19,12 +19,12 @@ struct DriverAssignment {
 
 class DriverAssignmentManager {
 private:
-    const PackageRegistry& registry;
+    PackageRegistry& registry;
     vector<Driver> drivers;
     vector<DriverAssignment> assignments;
 
 public:
-    DriverAssignmentManager(const PackageRegistry& registry);
+    DriverAssignmentManager(PackageRegistry& registry);
 
     bool addDriver(const Driver& driver);
 

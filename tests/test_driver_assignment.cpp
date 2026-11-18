@@ -126,6 +126,23 @@ TEST(DriverAssignmentTest, AssignPackageSuccessfully) {
     EXPECT_EQ(manager.getAssignments()[0].packageID, "PKG001");
     EXPECT_EQ(manager.getAssignments()[0].driverID, "D001");
     EXPECT_TRUE(errorMessage.empty());
+
+    // Verify that assigning a driver updates the package status.
+    int index = registry.getIndex("PKG001");
+    ASSERT_NE(index, -1);
+
+    // Verify that the previous status is preserved in the package history.
+    std::vector<Status> history = registry.getPackages()[index].getStatusHistory();
+
+    ASSERT_EQ(history.size(), 3u);
+    EXPECT_EQ(history[0].getStatusMessage(), "Registered");
+    EXPECT_EQ(history[1].getStatusMessage(), "Ready to be Delivered");
+    EXPECT_EQ(history[2].getStatusMessage(), "Assigned");
+
+    EXPECT_EQ(
+        registry.getPackages()[index].getCurrentStatus().getStatusMessage(),
+        "Assigned"
+    );
 }
 
 
@@ -146,6 +163,15 @@ TEST(DriverAssignmentTest, PackageNotReady) {
     EXPECT_FALSE(manager.assignPackage("PKG002", errorMessage));
     EXPECT_EQ(errorMessage, "package is not ready to be delivered.");
     EXPECT_TRUE(manager.getAssignments().empty());
+
+    // A rejected assignment should leave the package's status unchanged.
+    int index = registry.getIndex("PKG002");
+    ASSERT_NE(index, -1);
+
+    EXPECT_EQ(
+        registry.getPackages()[index].getCurrentStatus().getStatusMessage(),
+        "Registered"
+    );
 }
 
 // A package cannot be assigned if no driver serves its area.
@@ -168,6 +194,15 @@ TEST(DriverAssignmentTest, NoMatchingDriver) {
     EXPECT_FALSE(manager.assignPackage("PKG003", errorMessage));
     EXPECT_EQ(errorMessage, "no driver serves this delivery area.");
     EXPECT_TRUE(manager.getAssignments().empty());
+
+    // A failed assignment should not change the package's status.
+    int index = registry.getIndex("PKG003");
+    ASSERT_NE(index, -1);
+
+    EXPECT_EQ(
+        registry.getPackages()[index].getCurrentStatus().getStatusMessage(),
+        "Ready to be Delivered"
+    );
 }
 
 // A package should not be assigned to multiple drivers.

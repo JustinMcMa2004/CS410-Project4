@@ -164,7 +164,7 @@ int main() {
                           << errorMessage << "\n";
             }
         }
-        
+
         if (choice == 4) {
             std::string driverID, city, state;
             int hour, minute;
@@ -180,7 +180,7 @@ int main() {
             if (manager.addDriver(driver)) { // addDriver uses driver.isValid() to check if the driver is valid and returns false if not
                 std::cout << "Driver added successfully!\n";
             } else {
-                std::cout << "Failed to add driver: Driver ID already exists.\n";
+                std::cout << "Failed to add driver: Invalid driver information or Driver ID already exists.\n";
             }
         }
 
