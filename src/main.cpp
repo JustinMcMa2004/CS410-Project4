@@ -3,6 +3,10 @@
 #include <sstream>
 #include <string>
 #include "PackageRegistry.h"
+#include "DriverAssignmentManager.h"
+
+#include <ctime>
+
 
 namespace {
 // Read and trim user input.
@@ -44,15 +48,18 @@ bool readPositiveInt(const std::string& prompt, int& value) {
 }
 int main() {
     PackageRegistry registry;
+    DriverAssignmentManager manager(registry);
+
     std::cout << "Package Management System\n";
     int choice;
     while (readPositiveInt(
+        "5. Assign package to driver\n"
+        "4. Add delivery driver\n"
         "3. Update package status\n"
         "2. View existing package\n"
-        "1. Register package\n"
+        "1. Register package\n" 
         "0. Exit\nChoice: ", choice)) {
-
-        if (choice > 3 || choice < 0) {
+        if (choice > 5 || choice < 0) {
             std::cout << "Please select one of the values listed.\n";
             continue;
         }
@@ -100,6 +107,7 @@ int main() {
             else message = registry.getPackages()[index].getPackageInfo();
             std::cout << message << std::endl;
         }
+
         if (choice == 3) {
             std::string id;
             std::string statusChoice;
@@ -156,6 +164,51 @@ int main() {
                           << errorMessage << "\n";
             }
         }
+
+        if (choice == 4) {
+            std::string driverID, city, state;
+            int hour, minute;
+
+            if (!readText("Driver ID: ", driverID) ||
+                !readText("Delivery City: ", city) ||
+                !readText("Delivery State: ", state) ||
+                !readPositiveInt("Departure Hour (0-23): ", hour) ||
+                !readPositiveInt("Departure Minute (0-59): ", minute)) break;
+
+            Driver driver(driverID, city, state, hour, minute);
+
+            if (manager.addDriver(driver)) { // addDriver uses driver.isValid() to check if the driver is valid and returns false if not
+                std::cout << "Driver added successfully!\n";
+            } else {
+                std::cout << "Failed to add driver: Invalid driver information or Driver ID already exists.\n";
+            }
+        }
+
+        if (choice == 5) {
+            std::string packageID;
+            std::string errorMessage;
+
+            if (!readText("Enter Tracking ID: ", packageID)) break;
+
+            if (manager.assignPackage(packageID, errorMessage)) {
+
+                const DriverAssignment& assignment = manager.getAssignments().back();
+
+                std::time_t departure = std::chrono::system_clock::to_time_t(
+                    assignment.departureTime
+                );
+
+                std::cout << "Package assigned successfully!\n";
+                std::cout << "Tracking ID: " << assignment.packageID << "\n";
+                std::cout << "Assigned Driver: " << assignment.driverID << "\n";
+                std::cout << "Scheduled Departure: " << std::ctime(&departure);
+            }
+            else {
+                std::cout << "Assignment failed: " << errorMessage << "\n";
+
+            }
+        }
+
     }
     return 0;
 }

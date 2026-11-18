@@ -16,7 +16,8 @@ Package::Package(
     double weight,
     const Location& initialLocation,
     bool requiresSignature,
-    bool isFragile
+    bool isFragile,
+    std::chrono::system_clock::time_point intakeTime
     ) : destination(destination), initialLocation(initialLocation) {
         this->recipient = recipient;
         this->packageID = packageID;
@@ -25,8 +26,8 @@ Package::Package(
         this->requiresSignature = requiresSignature;
         this->isFragile = isFragile;
 
-        auto systemTime = std::chrono::system_clock::now();
-        std::time_t currentTime = std::chrono::system_clock::to_time_t(systemTime);
+        this->intakeTime = intakeTime;
+        std::time_t currentTime = std::chrono::system_clock::to_time_t(intakeTime);
         string currentTimeString = ctime(&currentTime);
         statusHistory.push_back(Status("Registered", currentTimeString));
         locationHistory.push_back(initialLocation);
@@ -47,6 +48,10 @@ string Package::getPackageID() const {
     return packageID;
 }
 
+std::chrono::system_clock::time_point Package::getIntakeTime() const {
+    return intakeTime;
+}
+
 Status Package::getCurrentStatus() const {
     // back returns the last element of a vector, and since new statuses are appended to history, the last element should represent the current status
     return statusHistory.back(); 
@@ -60,6 +65,11 @@ Location Package::getCurrentLocation() const {
     // back returns the last element of a vector, and since new statuses are appended to history, the last element should represent the current status
     return locationHistory.back(); 
 }
+
+Location Package::getDestination() const {
+    return destination;
+}
+
 
 vector<Location> Package::getLocationHistory() const {
     return locationHistory;
@@ -81,6 +91,8 @@ string Package::getPackageInfo() const {
     message += "Recipient: " + recipient + "\n";
     message += "Destination: " + destination.getLocation() + "\n";
     message += "ID: " + packageID + "\n";
+    std::time_t intake = std::chrono::system_clock::to_time_t(intakeTime);
+    message += "Intake Time: " + string(std::ctime(&intake));
     message += "Length x Width x Height (inches): "
         + std::to_string(dimensions[0])
         + " x " + std::to_string(dimensions[1])

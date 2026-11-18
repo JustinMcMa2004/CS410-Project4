@@ -11,6 +11,7 @@ Trying to search for a package in a registry of multiple packages works.
 
 #include <gtest/gtest.h>
 #include "PackageRegistry.h"
+#include <ctime>
 
 // Test that a non-existent package cannot be searched and the searcher returns -1. 
 TEST(PackageSearchTest, SearchNonExistentPackage) {
@@ -62,6 +63,10 @@ TEST(PackageSearchTest, validSearchWithApartment) {
     correctString += "Recipient: John Smith\n";
     correctString += "Destination: 296 Washington St, Apt. 1 Boston, MA 02108\n";
     correctString += "ID: 500001\n";
+    std::time_t intake = std::chrono::system_clock::to_time_t(
+        registry.getPackages()[0].getIntakeTime()
+    );
+    correctString += "Intake Time: " + std::string(std::ctime(&intake));
     correctString += "Length x Width x Height (inches): 5.000000 x 6.000000 x 7.000000\n";
     correctString += "Weight (pounds): 55.500000\n";
     correctString += "Requires Signature?: No\n";
@@ -112,6 +117,10 @@ TEST(PackageSearchTest, validSearchWithoutApartment) {
     correctString += "Recipient: John Smith\n";
     correctString += "Destination: 296 Washington St Boston, MA 02108\n";
     correctString += "ID: 500001\n";
+    std::time_t intake = std::chrono::system_clock::to_time_t(
+        registry.getPackages()[0].getIntakeTime()
+    );
+    correctString += "Intake Time: " + std::string(std::ctime(&intake));
     correctString += "Length x Width x Height (inches): 5.000000 x 6.000000 x 7.000000\n";
     correctString += "Weight (pounds): 55.500000\n";
     correctString += "Requires Signature?: No\n";
@@ -189,6 +198,10 @@ TEST(PackageSearchTest, validSearchWithMultiplePackages) {
     correctString += "Recipient: Alice Bob\n";
     correctString += "Destination: 1731 Massachusetts Ave Cambridge, MA 02138\n";
     correctString += "ID: P21000\n";
+    std::time_t intake = std::chrono::system_clock::to_time_t(
+        registry.getPackages()[1].getIntakeTime()
+    );
+    correctString += "Intake Time: " + std::string(std::ctime(&intake));
     correctString += "Length x Width x Height (inches): 2.000000 x 3.000000 x 4.000000\n";
     correctString += "Weight (pounds): 9.500000\n";
     correctString += "Requires Signature?: No\n";

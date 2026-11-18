@@ -31,6 +31,9 @@ public:
 
     // Returns a string that represents a properly formatted address. 
     string getLocation() const;
+
+    string getCity() const;
+    string getState() const;
 };
 
 #endif
