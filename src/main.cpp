@@ -53,12 +53,13 @@ int main() {
     std::cout << "Package Management System\n";
     int choice;
     while (readPositiveInt(
-        "4. Assign package to driver\n"
-        "3. Add delivery driver\n"
+        "5. Assign package to driver\n"
+        "4. Add delivery driver\n"
+        "3. Update package status\n"
         "2. View existing package\n"
         "1. Register package\n" 
         "0. Exit\nChoice: ", choice)) {
-        if (choice > 4 || choice < 0) {
+        if (choice > 5 || choice < 0) {
             std::cout << "Please select one of the values listed.\n";
             continue;
         }
@@ -106,7 +107,65 @@ int main() {
             else message = registry.getPackages()[index].getPackageInfo();
             std::cout << message << std::endl;
         }
+
         if (choice == 3) {
+            std::string id;
+            std::string statusChoice;
+            std::string newStatus;
+            std::string errorMessage;
+
+            if (!readText("Tracking ID: ", id)) break;
+
+            // Find the package by its tracking ID.
+            int index = registry.getIndex(id);
+
+            if (index == -1) {
+                std::cout << "Package not found.\n";
+                continue;
+            }
+
+            // Show the current status before updating it.
+            std::string currentStatus =
+                registry.getPackages()[index].getCurrentStatus().getStatusMessage();
+
+            std::cout << "Current Status: " << currentStatus << "\n\n";
+
+            std::cout << "Select new status:\n"
+                      << "1. Ready to be Delivered\n"
+                      << "2. Out for Delivery\n"
+                      << "3. Delivered\n"
+                      << "4. Delivery Failed\n";
+            if (!readText("Choice: ", statusChoice)) break;
+
+            if (statusChoice == "1") {
+                newStatus = "Ready to be Delivered";
+            }
+            else if (statusChoice == "2") {
+                newStatus = "Out for Delivery";
+            }
+            else if (statusChoice == "3") {
+                newStatus = "Delivered";
+            }
+            else if (statusChoice == "4") {
+                newStatus = "Delivery Failed";
+            }
+            else {
+                std::cout << "Invalid status selection.\n";
+                continue;
+            }
+
+            if (registry.updatePackageStatus(id, newStatus, errorMessage)) {
+                std::cout << "Status updated successfully!\n"
+                          << "Tracking ID: " << id << "\n"
+                          << "Current Status: " << newStatus << "\n";
+            }
+            else {
+                std::cout << "Status update failed: "
+                          << errorMessage << "\n";
+            }
+        }
+        
+        if (choice == 4) {
             std::string driverID, city, state;
             int hour, minute;
 
@@ -125,7 +184,7 @@ int main() {
             }
         }
 
-        if (choice == 4) {
+        if (choice == 5) {
             std::string packageID;
             std::string errorMessage;
 
@@ -146,8 +205,10 @@ int main() {
             }
             else {
                 std::cout << "Assignment failed: " << errorMessage << "\n";
+
             }
         }
+
     }
     return 0;
 }

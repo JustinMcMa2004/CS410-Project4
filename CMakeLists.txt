@@ -47,6 +47,7 @@ add_executable(product_tests
     tests/test_package_search.cpp
     tests/test_package_status_history.cpp
     tests/test_driver_assignment.cpp
+    tests/test_package_status_update.cpp
 )
 
 target_link_libraries(product_tests
